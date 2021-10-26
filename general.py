@@ -13,6 +13,12 @@ LOGS_PATH = os.path.join(os.path.dirname(__file__), 'logs')
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 TEMP_PATH = os.path.join(os.path.dirname(__file__), 'temp')
 
+folders = [LOGS_PATH, DATA_PATH, TEMP_PATH]
+
+for folder in folders:
+    if not os.path.isdir(folder):    
+        os.mkdir(folder)
+    
 
 HOLLIDAYS = {2020: [datetime(2020, 1, 1), datetime(2020, 1, 25), datetime(2020, 2, 24), datetime(2020, 2, 25),
                     datetime(2020, 4, 10), datetime(2020, 4, 21), datetime(2020, 5, 1), datetime(2020, 6, 11),

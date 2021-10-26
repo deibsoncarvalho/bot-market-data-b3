@@ -343,6 +343,22 @@ class InstrumentsConsolidated(FileProcess, Request):
                              verbose=verbose)
 
         Request.__init__(self)
+        
+    def get_instruments(self, from_date: datetime = datetime.today()) -> pd.DataFrame:
+        """
+        Get Instruments from B3
+        """
+        files = self.get_data_files()
+        if not files:
+            self.error('Not files for Instruments')
+            self.get()
+            return self.get_instruments(from_date=from_date)
+        df = pd.DataFrame()
+        for file in files:
+            d_file = datetime.strptime(file.split("\\")[-1].split(".")[0].split("_")[1], "%Y%m%d")
+            if d_file >= from_date:
+                df = df.append(pd.read_csv(file, sep=PANDAS_SEP, encoding=PANDAS_ENCODING), ignore_index=True)
+        return df
 
 
 class EconomicIndicator(FileProcess, Request):
@@ -511,3 +527,8 @@ def update_consolidated_data(verbose: bool = False):
 def get_economic_indicator(from_date: datetime = datetime.now() - timedelta(days=10),
                            verbose: bool = False) -> pd.DataFrame:
     return EconomicIndicator(verbose=verbose).get_economic_indicator(from_date=from_date)
+
+
+def get_instruments(from_date: datetime = datetime.today(),
+                    verbose: bool = False) -> pd.DataFrame:
+    return InstrumentsConsolidated(verbose=verbose).get_instruments(from_date=from_date)
